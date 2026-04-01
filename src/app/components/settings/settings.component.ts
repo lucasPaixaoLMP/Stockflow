@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
 import { ToastService } from '../../services/toast.service';
+import { ThemeService, Theme } from '../../services/theme.service';
 
 @Component({
   selector: 'app-settings',
@@ -29,12 +30,10 @@ import { ToastService } from '../../services/toast.service';
     <div class="card">
       <div class="card-header"><span class="card-title">🖼️ Logo da Loja</span></div>
       <div class="card-body">
-
-        <!-- Preview atual -->
         <div class="logo-preview-wrap">
           @if (logoPreview()) {
             <div class="logo-preview">
-              <img [src]="logoPreview()" alt="Logo" class="logo-img">
+              <img [src]="logoPreview()!" alt="Logo" class="logo-img">
               <button class="btn-remove-logo" (click)="removeLogo()" title="Remover logo">✕</button>
             </div>
             <p class="preview-label">Pré-visualização atual</p>
@@ -45,21 +44,12 @@ import { ToastService } from '../../services/toast.service';
             </div>
           }
         </div>
-
-        <!-- Upload -->
         <div class="upload-area" (click)="fileInput.click()" (dragover)="onDragOver($event)" (drop)="onDrop($event)" [class.drag-over]="dragging()">
           <input #fileInput type="file" accept="image/*" style="display:none" (change)="onFileChange($event)">
           <div class="upload-icon">📁</div>
           <div class="upload-text">Clique ou arraste sua imagem aqui</div>
-          <div class="upload-hint">PNG, JPG, SVG • Recomendado: fundo transparente (PNG)</div>
+          <div class="upload-hint">PNG, JPG, SVG • Recomendado: fundo transparente</div>
         </div>
-
-        @if (logoPreview()) {
-          <div class="logo-tips">
-            <div class="tip">✅ Logo carregado com sucesso</div>
-            <div class="tip-text">Para melhor resultado, use PNG com fundo transparente. O logo aparecerá na sidebar e na tela de login.</div>
-          </div>
-        }
       </div>
     </div>
 
@@ -69,21 +59,88 @@ import { ToastService } from '../../services/toast.service';
       <div class="card-body">
         <div class="form-group">
           <label>Nome exibido no sistema</label>
-          <input type="text" [(ngModel)]="storeName" placeholder="Ex: Loja da Maria, Mercadinho João...">
+          <input type="text" [(ngModel)]="storeName" placeholder="Ex: Loja da Maria...">
         </div>
-        <p class="field-hint">Este nome aparece abaixo do logo na sidebar.</p>
-
-        <!-- Prévia da sidebar -->
         <div class="sidebar-preview">
           <div class="sp-label">Pré-visualização da sidebar</div>
           <div class="sp-box">
             @if (logoPreview()) {
-              <img [src]="logoPreview()" alt="Logo" class="sp-logo">
+              <img [src]="logoPreview()!" alt="Logo" class="sp-logo">
             } @else {
               <div class="sp-logo-placeholder">✦</div>
             }
-            <div class="sp-name">{{ storeName || userName() }}</div>
+            <div class="sp-name">{{ storeName || userName()?.name || 'Sua Loja' }}</div>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tema -->
+    <div class="card" style="grid-column: 1 / -1;">
+      <div class="card-header"><span class="card-title">🎨 Tema da Interface</span></div>
+      <div class="card-body">
+        <div class="theme-grid">
+
+          <div class="theme-option" [class.active]="theme.theme() === 'dark'" (click)="theme.set('dark')">
+            <div class="theme-preview dark-preview">
+              <div class="tp-sidebar"></div>
+              <div class="tp-main">
+                <div class="tp-card"></div>
+                <div class="tp-card short"></div>
+              </div>
+            </div>
+            <div class="theme-info">
+              <div class="theme-name">🌑 Escuro</div>
+              <div class="theme-desc">Padrão — azul/cinza escuro</div>
+            </div>
+            @if (theme.theme() === 'dark') { <div class="theme-check">✓</div> }
+          </div>
+
+          <div class="theme-option" [class.active]="theme.theme() === 'light'" (click)="theme.set('light')">
+            <div class="theme-preview light-preview">
+              <div class="tp-sidebar"></div>
+              <div class="tp-main">
+                <div class="tp-card"></div>
+                <div class="tp-card short"></div>
+              </div>
+            </div>
+            <div class="theme-info">
+              <div class="theme-name">☀️ Claro</div>
+              <div class="theme-desc">Neutro — branco/cinza</div>
+            </div>
+            @if (theme.theme() === 'light') { <div class="theme-check">✓</div> }
+          </div>
+
+          <div class="theme-option" [class.active]="theme.theme() === 'dark-rose'" (click)="theme.set('dark-rose')">
+            <div class="theme-preview dark-rose-preview">
+              <div class="tp-sidebar"></div>
+              <div class="tp-main">
+                <div class="tp-card"></div>
+                <div class="tp-card short"></div>
+              </div>
+            </div>
+            <div class="theme-info">
+              <div class="theme-name">🌹 Rosa Escuro</div>
+              <div class="theme-desc">Elegante — rosa & preto</div>
+            </div>
+            @if (theme.theme() === 'dark-rose') { <div class="theme-check">✓</div> }
+          </div>
+
+          <div class="theme-option" [class.active]="theme.theme() === 'light-rose'" (click)="theme.set('light-rose')">
+            <div class="theme-preview light-rose-preview">
+              <div class="tp-sidebar"></div>
+              <div class="tp-main">
+                <div class="tp-card"></div>
+                <div class="tp-card short"></div>
+              </div>
+            </div>
+            <div class="theme-info">
+              <div class="theme-name">🌸 Rosa Claro</div>
+              <div class="theme-desc">Suave — rosa & branco</div>
+            </div>
+            @if (theme.theme() === 'light-rose') { <div class="theme-check">✓</div> }
+          </div>
+
         </div>
       </div>
     </div>
@@ -103,11 +160,11 @@ import { ToastService } from '../../services/toast.service';
 
     .card-body { padding: 24px; }
 
-    /* Logo preview */
+    /* Logo */
     .logo-preview-wrap { display: flex; flex-direction: column; align-items: center; margin-bottom: 20px; }
     .logo-preview {
       position: relative; display: inline-block;
-      background: repeating-conic-gradient(#f0d6de 0% 25%, #fdf6f8 0% 50%) 0 0 / 16px 16px;
+      background: repeating-conic-gradient(var(--surface2) 0% 25%, var(--surface) 0% 50%) 0 0 / 16px 16px;
       border-radius: 12px; padding: 16px; border: 1.5px solid var(--border);
     }
     .logo-img { max-height: 80px; max-width: 200px; display: block; object-fit: contain; }
@@ -116,47 +173,28 @@ import { ToastService } from '../../services/toast.service';
       width: 22px; height: 22px; border-radius: 50%;
       background: var(--danger); color: #fff; border: none;
       font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center;
-      &:hover { filter: brightness(1.1); }
     }
     .preview-label { font-size: 12px; color: var(--text3); margin-top: 8px; }
-
     .logo-empty {
       width: 100%; padding: 24px; text-align: center;
       background: var(--surface2); border-radius: 12px; border: 1.5px dashed var(--border);
-      color: var(--text3);
+      color: var(--text3); margin-bottom: 16px;
       .logo-empty-icon { font-size: 32px; margin-bottom: 6px; }
       p { font-size: 13px; }
     }
-
-    /* Upload area */
     .upload-area {
       border: 2px dashed var(--accent-light);
       border-radius: 14px; padding: 28px 20px;
       text-align: center; cursor: pointer;
       background: var(--accent-soft);
       transition: all 0.2s;
-      &:hover, &.drag-over {
-        border-color: var(--accent);
-        background: rgba(196,99,122,0.1);
-        transform: scale(1.01);
-      }
+      &:hover, &.drag-over { border-color: var(--accent); transform: scale(1.01); }
     }
     .upload-icon { font-size: 28px; margin-bottom: 8px; }
     .upload-text { font-size: 14px; font-weight: 600; color: var(--accent); margin-bottom: 4px; }
     .upload-hint { font-size: 12px; color: var(--text3); }
 
-    .logo-tips {
-      margin-top: 14px; padding: 12px 14px;
-      background: rgba(90,158,124,0.08); border: 1px solid rgba(90,158,124,0.25);
-      border-radius: 10px;
-    }
-    .tip { font-size: 13px; font-weight: 600; color: var(--success); margin-bottom: 4px; }
-    .tip-text { font-size: 12px; color: var(--text2); }
-
-    .field-hint { font-size: 12px; color: var(--text3); margin-top: -10px; margin-bottom: 20px; }
-
     /* Sidebar preview */
-    .sidebar-preview { margin-top: 4px; }
     .sp-label { font-size: 11px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 10px; }
     .sp-box {
       background: var(--surface2); border: 1.5px solid var(--border);
@@ -175,6 +213,61 @@ import { ToastService } from '../../services/toast.service';
       font-size: 17px; font-weight: 700; color: var(--text);
     }
 
+    /* Theme grid */
+    .theme-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+    @media (max-width: 900px) { .theme-grid { grid-template-columns: 1fr 1fr; } }
+
+    .theme-option {
+      border: 2px solid var(--border); border-radius: 16px;
+      cursor: pointer; overflow: hidden; position: relative;
+      transition: all 0.2s;
+      &:hover { border-color: var(--accent-light); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+      &.active { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+    }
+    .theme-check {
+      position: absolute; top: 10px; right: 10px;
+      width: 22px; height: 22px; border-radius: 50%;
+      background: var(--accent); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700;
+    }
+    .theme-info { padding: 12px 14px; }
+    .theme-name { font-weight: 700; font-size: 14px; margin-bottom: 3px; }
+    .theme-desc { font-size: 12px; color: var(--text3); }
+
+    /* Theme previews */
+    .theme-preview {
+      height: 90px; display: flex; overflow: hidden;
+    }
+    .tp-sidebar { width: 30%; }
+    .tp-main { flex: 1; padding: 8px; display: flex; flex-direction: column; gap: 6px; }
+    .tp-card { border-radius: 6px; height: 30px; }
+    .tp-card.short { height: 18px; width: 70%; }
+
+    /* dark */
+    .dark-preview { background: #0d0e12; }
+    .dark-preview .tp-sidebar { background: #13151c; border-right: 1px solid #272b38; }
+    .dark-preview .tp-card { background: #13151c; border: 1px solid #272b38; }
+
+    /* light */
+    .light-preview { background: #f4f5f8; }
+    .light-preview .tp-sidebar { background: #ffffff; border-right: 1px solid #dde0ea; }
+    .light-preview .tp-card { background: #ffffff; border: 1px solid #dde0ea; }
+
+    /* dark-rose */
+    .dark-rose-preview { background: #0a0a0f; }
+    .dark-rose-preview .tp-sidebar { background: #111118; border-right: 1px solid #2a2a3a; }
+    .dark-rose-preview .tp-card { background: #111118; border: 1px solid #2a2a3a; }
+
+    /* light-rose */
+    .light-rose-preview { background: #fdf6f8; }
+    .light-rose-preview .tp-sidebar { background: #ffffff; border-right: 1px solid #f0d6de; }
+    .light-rose-preview .tp-card { background: #ffffff; border: 1px solid #f0d6de; }
+
     .btn-spin {
       width: 13px; height: 13px; border: 2px solid rgba(255,255,255,0.4);
       border-top-color: #fff; border-radius: 50%;
@@ -187,6 +280,7 @@ export class SettingsComponent implements OnInit {
   private http  = inject(HttpClient);
   private auth  = inject(AuthService);
   private toast = inject(ToastService);
+  theme = inject(ThemeService);
 
   saving      = signal(false);
   dragging    = signal(false);
@@ -207,26 +301,19 @@ export class SettingsComponent implements OnInit {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (file) this.processFile(file);
   }
-
   onDragOver(e: DragEvent) { e.preventDefault(); this.dragging.set(true); }
-
   onDrop(e: DragEvent) {
     e.preventDefault(); this.dragging.set(false);
     const file = e.dataTransfer?.files[0];
     if (file && file.type.startsWith('image/')) this.processFile(file);
   }
-
   processFile(file: File) {
     if (file.size > 2 * 1024 * 1024) { this.toast.error('Imagem muito grande (máx. 2MB)'); return; }
     const reader = new FileReader();
     reader.onload = (e) => this.logoPreview.set(e.target?.result as string);
     reader.readAsDataURL(file);
   }
-
-  removeLogo() {
-    this.logoPreview.set(null);
-    this.toast.warning('Logo removido — clique em Salvar para confirmar');
-  }
+  removeLogo() { this.logoPreview.set(null); }
 
   save() {
     this.saving.set(true);
@@ -237,12 +324,6 @@ export class SettingsComponent implements OnInit {
       next: (user) => {
         this.toast.success('Configurações salvas!');
         this.saving.set(false);
-        // Update auth user signal with new store info
-        const current = this.auth.currentUser();
-        if (current) {
-          localStorage.setItem('sf_user', JSON.stringify({ ...current, store_name: user.store_name }));
-        }
-        // Force layout to reload logo
         window.dispatchEvent(new CustomEvent('store-settings-updated', { detail: user }));
       },
       error: (e) => { this.toast.error(e.error?.error || 'Erro ao salvar'); this.saving.set(false); }
