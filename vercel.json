@@ -1,6 +1,6 @@
 {
   "buildCommand": "ng build --configuration production",
-  "outputDirectory": "dist/stockflow-frontend/browser",
+  "outputDirectory": "dist/stockflow/browser",
   "rewrites": [
     {
       "source": "/api/:path*",
