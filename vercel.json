@@ -4,7 +4,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://stockflow-api.fly.dev/api/:path*"
+      "destination": "https://stockflow-api-lucas.fly.dev/api/:path*"
     },
     {
       "source": "/((?!api).*)",
