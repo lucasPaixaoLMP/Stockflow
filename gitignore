@@ -1,0 +1,66 @@
+# ========================
+#  STOCKFLOW — .gitignore
+# ========================
+
+# Dependências
+node_modules/
+.npm/
+
+# Build do Angular
+frontend/dist/
+frontend/.angular/cache/
+
+# Variáveis de ambiente e segredos
+.env
+.env.*
+*.env
+!*.env.example
+
+# Banco de dados local
+*.sqlite
+*.sqlite3
+*.db
+backend/db/*.sqlite
+backend/data/
+
+# Configurações do Fly.io (contém tokens e dados da sua conta)
+.fly/
+fly.toml
+
+# Configurações da Vercel (contém dados do seu projeto)
+.vercel/
+
+# Turso — tokens e configs locais
+.turso/
+turso.json
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor / IDE
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Cache e temporários
+.cache/
+tmp/
+temp/
+*.tmp
+
+# Script de inicialização local (específico da sua máquina)
+start.bat
+start.sh
