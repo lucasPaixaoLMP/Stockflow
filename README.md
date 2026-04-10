@@ -121,4 +121,4 @@ C:\stockflow\
 
 ## Autor
 
-Desenvolvido por **Lucas** — [Portfólio](https://seu-portfolio.com)
+Desenvolvido por **Lucas** — [Portfólio](https://lukkidev.vercel.app)
